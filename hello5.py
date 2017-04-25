@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, session, redirect, url_for, flash
 from flask import make_response
 from flask import redirect
@@ -11,24 +12,32 @@ from datetime import datetime
 from flask_wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
+from flask_sqlalchemy import SQLAlchemy
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
+
+app.config['SQLALCHEMY_DATABASE_URI'] =\
+    'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 manager = Manager(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
-
+db = SQLAlchemy(app)
 
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-
+    
     def __repr__(self):
         return '<Role %r>' % self.name
 
-    users = db.relationship('User', backref='role')
+    users = db.relationship('User', backref='role', lazy='dynamic')
 
 
 class User(db.Model):
@@ -51,16 +60,20 @@ class NameForm(Form):
 def index():
     form = NameForm()
     if form.validate_on_submit():
-        old_name = session.get('name')
-        if old_name is not None and old_name != form.name.data:
-            flash('Looks like you have changed your name!')
+        user = User.query.filter_by(username=form.name.data).first()
+        if user is None:
+            user = User(username = form.name.data)
+            db.session.add(user)
+            session['known'] = False
+        else:
+            session['known'] = True
         session['name'] = form.name.data
         form.name.data = ''
         return redirect(url_for('index'))
     return render_template('index.html',
-            form = form, name = session.get('name'))
+            form = form, name = session.get('name'),
+            known = session.get('known', False))
 
-    
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
@@ -100,4 +113,6 @@ def user(name):
 #    app.run(debug=True)
 
 if __name__ == '__main__':
+    db.create_all()
     manager.run()
+
