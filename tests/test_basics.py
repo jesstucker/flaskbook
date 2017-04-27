@@ -12,11 +12,11 @@ class BasicTestCase(unittest.TestCase):
 
     def tearDown(self):
         db.session.remove()
-        db.dropall()
+        db.drop_all()
         self.app_context.pop()
 
     def test_app_exists(self):
-        self.assertiveFalse(current_app is None)
+        self.assertFalse(current_app is None)
 
     def test_app_is_testing(self):
         self.assertTrue(current_app.config['TESTING'])
