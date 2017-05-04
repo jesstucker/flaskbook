@@ -1,3 +1,4 @@
+import pdb
 from threading import Thread
 from flask import current_app, render_template
 from flask_mail import Message
@@ -16,4 +17,5 @@ def send_email(to, subject, template, **kwargs):
     msg.html = render_template(template + '.html', **kwargs)
     thr = Thread(target=send_async_email, args=[app, msg])
     thr.start()
+    pdb.set_trace()
     return thr
