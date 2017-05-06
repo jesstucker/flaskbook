@@ -1,7 +1,7 @@
 from flask import render_template, session, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from . import main
-from .forms import NameForm
+from .forms import NameForm, EditProfileForm
 from ..email import send_email
 from .. import db
 from ..models import User
