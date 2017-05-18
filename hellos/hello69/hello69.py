@@ -53,11 +53,6 @@ def index():
         db.session.add(text)
         return redirect(url_for('index'))
     else:
-        # return render_template('index.html',
-        #         texts = texts,
-        #         form = form,
-        #         name = session.get('name')
-        #         )
         return """
         <div>
             TEXTS:<br>

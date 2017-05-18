@@ -14,7 +14,7 @@ def form():
 
 @app.route('/hello', methods=['GET', 'POST'])
 def hello():
-    request.get_data(as_text=True)
+    request.get_data()
     if os.path.exists('database.txt'):
     	database = open('database.txt', 'a')
     else:	
@@ -22,20 +22,11 @@ def hello():
     database.write(request.form['say'] + ',' + request.form['to'] + '\n')
     database = open('database.txt', 'r')
     return \
-    '''
-      <p>
-	      Say: {0} <br> 
-	      To: {1} <br>
-	      Form Data Unparsed:{2} <br>
-	      Stored: <br> {3} <br>
-      </p>
-	'''.format(\
-		request.form['say'],\
-		request.form['to'], \
-		request.data,\
-		database.read().replace('\n', '<br>')
-		)
-
+    '''<p>Say: {0} <br>'''.format(request.form['say']) + \
+	'''   To: {0} <br>'''.format(request.form['to']) + \
+	'''   Form Data Unparsed:{0} <br>'''.format(request.data) + \
+	'''   Stored: <br> {0} <br>'''.format(database.read()) + \
+    '''</p>'''
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
