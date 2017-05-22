@@ -18,8 +18,8 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_mail import Mail
 from threading import Thread
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-
+# basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.dirname(os.path.realpath('__file__'))
 app = Flask(__name__)
 mail = Mail(app)
 app.config['SECRET_KEY'] = 'hard to guess string'
@@ -48,7 +48,7 @@ def send_email(to, subject, template, **kwargs):
     return thr
 
 
-manager = Manager(app)
+manager = Manager(app) 
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 db = SQLAlchemy(app)
@@ -89,11 +89,21 @@ class NameForm(Form):
 
 @app.route('/', methods=['GET','POST'])
 def index():
+    # makes an instance of the form
     form = NameForm()
+    # validates form input, i guess for security reasons. not sure
     if form.validate_on_submit():
+        # tricky coupling here. kind of annoying for a beginner actually
+        # checks database to see whether there's already an instance of
+        # the name entered in the form. 
         user = User.query.filter_by(username=form.name.data).first()
+        # if there is no instance, it enters it into the database, like so:
         if user is None:
+            # takes user variable and makes new User class instance of it
+            # by taking property 'username' and inserting it to the User model
             user = User(username = form.name.data)
+            # then adds it to the session. I do not understand sessions.
+            # get a concise definition of it then[y]
             db.session.add(user)
             session['known'] = False
             if app.config['FLASKY_ADMIN']:
