@@ -118,10 +118,16 @@ def index():
             form = form, name = session.get('name'),
             known = session.get('known', False))
 
+# Nice to have webpages about error handling
+#but of not great concern during development.
+#before you take exception, just no
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
+# Nice to have webpages about error handling
+#but of not great concern during development.
+#before you take exception, just no
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.hmtl'), 500
@@ -134,20 +140,24 @@ def internal_server_error(e):
 #        abort(404)
 #    return '<h1>Hello, %s</h1>' % user.name
 
+#Not great concern but great simple example!
 @app.route('/redirect')
 def redir():
     return redirect('http://www.example.com')
 
+#Not great concern but great simple example!
 @app.route('/bad')
 def bad():
     return '<h1>Bad request, man</h1>', 400
 
+#Not great concern but great simple example!
 @app.route('/cookie')
 def cookie():
     response = make_response('<h1>This document carries a cookie!</h1>')
     response.set_cookie('answer', '42')
     return response
 
+#Not great concern but great simple example!
 @app.route('/user/<name>')
 def user(name):
     return render_template('user.html', name=name)
@@ -158,5 +168,5 @@ def user(name):
 
 if __name__ == '__main__':
     db.create_all()
-    manager.run()
+    manager.run(debug=True)
 
