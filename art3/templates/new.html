@@ -1,0 +1,21 @@
+<body>
+  Arts<br>
+  <form action= "{{ request.path }}" method="post" enctype = "multipart/form-data">
+    <label for='image_url'>Image Upload</label><input type='file' name='upload' />
+    <label for='title'>Title</label><input type='text' name='title' />
+    <input type="submit" value="Submit" />
+    <br>
+  </form>
+
+  <table>
+      <tbody>
+        {% for art in artwork %}
+        <tr>
+          <td><img src='{{ art.image_url }}' > </td>
+          <td>{{ art.title }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+
+</body>
