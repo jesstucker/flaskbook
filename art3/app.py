@@ -1,3 +1,4 @@
+#should be reduced down further to for demo
 import os
 from flask import Flask, request, url_for, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
