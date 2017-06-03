@@ -1,10 +1,16 @@
 <h1>Hello {% if result %} {{ result.name }} {% else %} Poo {% endif %}</h1>
 <h1>Dook {% if name %} {{name}} {% else %} Dook! {% endif %}</h1>
 <p>{{ crap }}</p>
-
 {% for message in get_flashed_messages() %}
 <h2>{{ message }}</h2>
 {% endfor %}
+
+{% if not known %}
+<p>wutup</p>
+{% else %}
+<p>sup bro</p>
+{% endif %}
+
 <form method='POST'>
     {{ form.name.label }} {{ form.name() }}
     {{ form.submit() }}
